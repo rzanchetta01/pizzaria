@@ -31,9 +31,9 @@ namespace Pizzaria.Controllers
 
         // GET: api/Avaliacaoes/5
         [HttpGet("All/{idPizza}")]
-        public async Task<ActionResult<IEnumerable<Avaliacao>>> GetAllAvaliacaoByPizzaId(int id)
+        public async Task<ActionResult<IEnumerable<Avaliacao>>> GetAllAvaliacaoByPizzaId(int idPizza)
         {           
-            return avaliacao.GetAvaliacoesByIdPizza(id);
+            return avaliacao.GetAvaliacoesByIdPizza(idPizza);
         }
 
         [HttpGet("One/{idAv}")]

@@ -17,12 +17,14 @@ namespace Pizzaria.Data
         public virtual DbSet<Bebida> Bebidas { get; set; }
         public virtual DbSet<Pizza> Pizzas { get; set; }
         public virtual DbSet<Avaliacao> AvaliacaosDb { get; set; }
+        public virtual DbSet<Cliente> Clientes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder model)
         {
             PizzasCreating(model);
             BebidasCreating(model);
             AvaliacoesCreating(model);
+            ClienteCreating(model);
         }
 
         public void PizzasCreating(ModelBuilder model)
@@ -47,7 +49,7 @@ namespace Pizzaria.Data
                 .IsRequired(true)
                 .HasColumnName("descricao_pizza");
 
-                entity.Property(x => x.Tamanho)
+                entity.Property(x => x.QntFatias)
                 .IsRequired(true)
                 .HasColumnName("tamanho_pizza");
 
@@ -94,13 +96,11 @@ namespace Pizzaria.Data
         {
             model.Entity<Avaliacao>(entity =>
             {
+                
                 entity.HasKey(x => x.Id);
 
-                entity.HasOne(r => r.idPizzaRelation)
-                .WithMany(e => e.Avaliacoes)
-                .HasForeignKey(r => r.IdPizza)
-                .HasConstraintName("fk_avaliacao_pizza")
-                .OnDelete(DeleteBehavior.Cascade);
+                entity.Property(x => x.IdPizza)
+                .HasColumnName("id_pizza");
 
                 entity.Property(x => x.Id)
                 .UseIdentityColumn()
@@ -113,9 +113,45 @@ namespace Pizzaria.Data
                 entity.Property(x => x.Comentario)
                 .HasMaxLength(400)
                 .IsUnicode(false)
-                .IsRequired(true)
                 .HasColumnName("comentarios");
             });     
-        } 
+        }
+
+        public void ClienteCreating(ModelBuilder model)
+        {
+            model.Entity<Cliente>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+
+                entity.Property(p => p.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+
+                entity.Property(p => p.PrimeiroNome)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .IsRequired(true)
+                .HasColumnName("primeiro_nome");
+
+                entity.Property(p => p.SegundoNome)
+                .HasMaxLength(250)
+                .IsUnicode(false)
+                .IsRequired(true)
+                .HasColumnName("segundo_nome");
+
+                entity.Property(p => p.Email)
+                .HasMaxLength(150)
+                .IsUnicode(false)
+                .IsRequired(true)
+                .HasColumnName("email");
+
+                entity.Property(p => p.Senha)
+                .HasMaxLength(25)
+                .IsUnicode(true)
+                .IsRequired(true)
+                .HasColumnName("senha");
+
+            });
+        }
     }
 }

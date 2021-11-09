@@ -25,13 +25,13 @@ namespace Pizzaria.Controllers
         }
 
         // GET: api/Pizzas
-        [HttpGet]
+        [HttpGet("All/")]
         public async Task<ActionResult<IEnumerable<Pizza>>> GetPizzas()
         {
             return await ps.GetPizzas();
         }
         // GET: api/Pizzas/5
-        [HttpGet("{id}")]
+        [HttpGet("One/{id}")]
         public async Task<ActionResult<Pizza>> GetPizza(int id)
         {
             return await ps.GetPizza(id);
@@ -39,7 +39,7 @@ namespace Pizzaria.Controllers
 
         // PUT: api/Pizzas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("Req/{id}")]
         public async Task<ActionResult<Pizza>> PutPizza(int id, Pizza pizza)
         {           
             return await ps.PutPizza(id, pizza);
@@ -47,14 +47,14 @@ namespace Pizzaria.Controllers
 
         // POST: api/Pizzas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("Req")]
         public async Task<ActionResult<Pizza>> PostPizza(Pizza pizza)
         {
            return await ps.PostPizza(pizza);
         }
 
         // DELETE: api/Pizzas/5
-        [HttpDelete("{id}")]
+        [HttpDelete("Req/{id}")]
         public async Task<ActionResult<string>> DeletePizza(int id)
         {
             return await ps.DeletePizza(id);

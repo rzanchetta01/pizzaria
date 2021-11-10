@@ -13,12 +13,12 @@ namespace Pizzaria.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AvaliacaoesController : ControllerBase
+    public class AvaliacoesController : ControllerBase
     {
         private readonly AvaliacaoService avaliacao;
         private readonly AppDbContext dbContext;
 
-        public AvaliacaoesController(AvaliacaoService avaliacao, AppDbContext dbContext)
+        public AvaliacoesController(AvaliacaoService avaliacao, AppDbContext dbContext)
         {
             this.avaliacao = avaliacao;
             this.dbContext = dbContext;

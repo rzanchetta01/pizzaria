@@ -37,6 +37,7 @@ namespace Pizzaria.Services
       
         public async Task<ActionResult<Cliente>> PostCliente(Cliente cliente)
         {
+            cliente.Id = 0;
             dbContext.Clientes.Add(cliente);
             await dbContext.SaveChangesAsync();
             var p = await GetCliente(cliente.Id);

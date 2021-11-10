@@ -16,10 +16,12 @@ namespace Pizzaria.Controllers
     public class AvaliacaoesController : ControllerBase
     {
         private readonly AvaliacaoService avaliacao;
+        private readonly AppDbContext dbContext;
 
-        public AvaliacaoesController(AvaliacaoService avaliacao)
+        public AvaliacaoesController(AvaliacaoService avaliacao, AppDbContext dbContext)
         {
             this.avaliacao = avaliacao;
+            this.dbContext = dbContext;
         }
 
         // GET: api/Avaliacaoes
@@ -32,14 +34,33 @@ namespace Pizzaria.Controllers
         // GET: api/Avaliacaoes/5
         [HttpGet("All/{idPizza}")]
         public async Task<ActionResult<IEnumerable<Avaliacao>>> GetAllAvaliacaoByPizzaId(int idPizza)
-        {           
-            return avaliacao.GetAvaliacoesByIdPizza(idPizza);
+        {
+            var pizzas = await dbContext.Pizzas.ToListAsync();
+
+            foreach (var e in pizzas)
+            {
+                if (e.Id == idPizza)
+                {
+                    return avaliacao.GetAvaliacoesByIdPizza(idPizza);
+                }
+            }
+ 
+            return BadRequest();
         }
 
         [HttpGet("One/{idAv}")]
         public async Task<ActionResult<Avaliacao>> GetOneAvaliacaoByPizzaId(int idAv)
         {
-            return await avaliacao.GetOneAvaliacaoOfPizza(idAv);
+            var avaliacoes = await dbContext.AvaliacaosDb.ToListAsync();
+
+            foreach (var e in avaliacoes)
+            {
+                if(e.Id == idAv)
+                {
+                    return await avaliacao.GetOneAvaliacaoOfPizza(idAv);
+                }
+            }
+            return BadRequest();
         }
         
 
@@ -52,8 +73,17 @@ namespace Pizzaria.Controllers
             {
                 return BadRequest();
             }
+            var avaliacoes = await dbContext.AvaliacaosDb.ToListAsync();
 
-           return await avaliacao.PutAvaliacao(id, av);
+            foreach (var e in avaliacoes)
+            {
+                if(e.Id == id)
+                {
+                    return await avaliacao.PutAvaliacao(id, av);
+                }
+            }
+
+            return BadRequest();
         }
 
         // POST: api/Avaliacaoes

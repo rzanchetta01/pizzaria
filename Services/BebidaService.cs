@@ -38,6 +38,7 @@ namespace Pizzaria.Services
         }
         public async Task<ActionResult<Bebida>> PostPBebida(Bebida bebida)
         {
+            bebida.Id = 0;
             dbContext.Bebidas.Add(bebida);
             await dbContext.SaveChangesAsync();
             var p = await GetBebida(bebida.Id);

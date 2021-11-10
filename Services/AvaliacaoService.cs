@@ -52,6 +52,8 @@ namespace Pizzaria.Services
         }
         public async Task<ActionResult<Avaliacao>> PostAvaliacao(int idPizza, Avaliacao av)
         {
+            av.Id = 0;
+            av.IdPizza = idPizza;
             dbContext.AvaliacaosDb.Add(av);
             await dbContext.SaveChangesAsync();
             var p = await GetOneAvaliacaoOfPizza(av.Id);

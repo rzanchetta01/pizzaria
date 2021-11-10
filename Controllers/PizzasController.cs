@@ -16,12 +16,10 @@ namespace Pizzaria.Controllers
     public class PizzasController : ControllerBase
     {
         private readonly PizzaService ps;
-        private readonly AvaliacaoService avaliacaoService;
 
-        public PizzasController(PizzaService ps, AvaliacaoService avaliacaoService)
+        public PizzasController(PizzaService ps)
         {
-            this.ps = ps;
-            this.avaliacaoService = avaliacaoService;
+            this.ps = ps;          
         }
 
         // GET: api/Pizzas

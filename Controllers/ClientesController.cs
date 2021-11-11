@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Pizzaria.Data;
 using Pizzaria.Model;
 using Pizzaria.Services;
+using Pizzaria.Validations;
 
 namespace Pizzaria.Controllers
 {
@@ -41,6 +42,10 @@ namespace Pizzaria.Controllers
         [HttpPut("Req/{id}")]
         public async Task<ActionResult<Cliente>> PutCliente(int id, Cliente cliente)
         {
+            var validado = new ClientesValidations().Validate(cliente);
+            if (!validado.IsValid)
+                return BadRequest(validado.Erros);
+
             return await clienteService.PutCliente(id, cliente);
         }
 
@@ -49,7 +54,11 @@ namespace Pizzaria.Controllers
         [HttpPost("Req/")]
         public async Task<ActionResult<Cliente>> PostCliente(Cliente cliente)
         {
-           return await clienteService.PostCliente(cliente);
+            var validado = new ClientesValidations().Validate(cliente);
+            if (!validado.IsValid)
+                return BadRequest(validado.Erros);
+
+            return await clienteService.PostCliente(cliente);
         }
 
         // DELETE: api/Clientes/5

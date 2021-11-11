@@ -16,7 +16,7 @@ namespace Pizzaria.Services
 
         //Get all pizzas
         public async Task<ActionResult<IEnumerable<Bebida>>> GetBebidas()
-        {
+        {           
             return await dbContext.Bebidas.ToListAsync();
         }
 

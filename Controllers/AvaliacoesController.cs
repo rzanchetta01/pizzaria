@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Pizzaria.Data;
 using Pizzaria.Model;
 using Pizzaria.Services;
+using Pizzaria.Validations;
 
 namespace Pizzaria.Controllers
 {
@@ -69,21 +70,13 @@ namespace Pizzaria.Controllers
         [HttpPut("Req/{id}")]
         public async Task<ActionResult<Avaliacao>> PutAvaliacao(int id, Avaliacao av)
         {
-            if (id != av.Id)
-            {
-                return BadRequest();
-            }
-            var avaliacoes = await dbContext.AvaliacaosDb.ToListAsync();
 
-            foreach (var e in avaliacoes)
-            {
-                if(e.Id == id)
-                {
-                    return await avaliacao.PutAvaliacao(id, av);
-                }
-            }
+            var validado = new AvaliacoesValidations(dbContext).Validate(av);
+            if (!validado.IsValid)
+                return BadRequest(validado.Erros);
 
-            return BadRequest();
+
+            return await avaliacao.PutAvaliacao(id, av);
         }
 
         // POST: api/Avaliacaoes
@@ -91,6 +84,10 @@ namespace Pizzaria.Controllers
         [HttpPost("Req/{idPizza}")]
         public async Task<ActionResult<Avaliacao>> PostAvaliacao(int idPizza, Avaliacao av)
         {
+            var validado = new AvaliacoesValidations(dbContext).Validate(av);
+            if (!validado.IsValid)
+                return BadRequest(validado.Erros);
+
             return await avaliacao.PostAvaliacao(idPizza,av);
         }
 

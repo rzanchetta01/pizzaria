@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Pizzaria.Data;
 using Pizzaria.Model;
 using Pizzaria.Services;
+using Pizzaria.Validations;
 
 namespace Pizzaria.Controllers
 {
@@ -41,7 +42,11 @@ namespace Pizzaria.Controllers
         [HttpPut("Req/{id}")]
         public async Task<ActionResult<Bebida>> PutBebida(int id, Bebida bebida)
         {
-            return await bs.PutBebida(id, bebida);
+            var validado = new BebidasValidations().Validate(bebida);
+            if (!validado.IsValid)
+                return BadRequest(validado.Erros);
+
+            return await bs.PutBebida(id, bebida);            
         }
 
         // POST: api/Bebidas
@@ -49,6 +54,10 @@ namespace Pizzaria.Controllers
         [HttpPost("Req/")]
         public async Task<ActionResult<Bebida>> PostBebida(Bebida bebida)
         {
+            var validado = new BebidasValidations().Validate(bebida);
+            if (!validado.IsValid)
+                return BadRequest(validado.Erros);
+
             return await bs.PostPBebida(bebida);
         }
 

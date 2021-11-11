@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Pizzaria.Controllers;
 using Pizzaria.Data;
 using Pizzaria.Services;
+using Pizzaria.Validations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,7 @@ builder.Services.AddScoped<BebidaService>();
 builder.Services.AddScoped<AvaliacaoService>();
 builder.Services.AddScoped<ClienteService>();
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DevelopConnection")));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("RodrigoConnection")));
 //builder.Configuration.GetConnectionString("RodrigoConnection");
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

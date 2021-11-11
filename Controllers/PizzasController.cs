@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Pizzaria.Data;
 using Pizzaria.Model;
 using Pizzaria.Services;
+using Pizzaria.Validations;
 
 namespace Pizzaria.Controllers
 {
@@ -42,10 +43,9 @@ namespace Pizzaria.Controllers
         [HttpPut("Req/{id}")]
         public async Task<ActionResult<Pizza>> PutPizza(int id, Pizza pizza)
         {
-            if (pizza.Nome == null || pizza.QntFatias <= 0 || pizza.Preco <= 0.0)
-            {
-                return BadRequest("Parametros invalido");
-            }
+            var validado = new PizzasValidations().Validate(pizza);
+            if (!validado.IsValid)
+                return BadRequest(validado.Erros);
 
            pizza.Id = id;
            return await ps.PutPizza(id, pizza);
@@ -56,22 +56,11 @@ namespace Pizzaria.Controllers
         [HttpPost("Req")]
         public async Task<ActionResult<Pizza>> PostPizza(Pizza pizza)
         {
-            var pizzas = await ps.GetPizzas();
+            var validado = new PizzasValidations().Validate(pizza);
+            if (!validado.IsValid)
+                return BadRequest(validado.Erros);
 
-            if (pizza.Nome == null || pizza.QntFatias <= 0 || pizza.Preco <= 0.0)
-            {
-                return BadRequest("Parametros invalido");
-            }
-
-            foreach (var e in pizzas.Value)
-            {
-                if(e.Nome == pizza.Nome || pizza.Nome == null)
-                {
-                    return BadRequest("Ja existe uma pizza com esse nome");
-                }
-            }
-
-           return Ok(await ps.PostPizza(pizza));
+            return Ok(await ps.PostPizza(pizza));
         }
 
         // DELETE: api/Pizzas/5

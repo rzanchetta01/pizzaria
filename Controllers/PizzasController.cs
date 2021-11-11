@@ -32,15 +32,23 @@ namespace Pizzaria.Controllers
         [HttpGet("One/{id}")]
         public async Task<ActionResult<Pizza>> GetPizza(int id)
         {
-            return await ps.GetPizza(id);
+            var pizza = await ValidarId(id);
+            return pizza.Value == null ? pizza.Result : Ok(pizza.Value);
+            
         }
 
         // PUT: api/Pizzas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("Req/{id}")]
         public async Task<ActionResult<Pizza>> PutPizza(int id, Pizza pizza)
-        {           
-            return await ps.PutPizza(id, pizza);
+        {
+            if (pizza.Nome == null || pizza.QntFatias <= 0 || pizza.Preco <= 0.0)
+            {
+                return BadRequest("Parametros invalido");
+            }
+
+           pizza.Id = id;
+           return await ps.PutPizza(id, pizza);
         }
 
         // POST: api/Pizzas
@@ -48,14 +56,54 @@ namespace Pizzaria.Controllers
         [HttpPost("Req")]
         public async Task<ActionResult<Pizza>> PostPizza(Pizza pizza)
         {
-           return await ps.PostPizza(pizza);
+            var pizzas = await ps.GetPizzas();
+
+            if (pizza.Nome == null || pizza.QntFatias <= 0 || pizza.Preco <= 0.0)
+            {
+                return BadRequest("Parametros invalido");
+            }
+
+            foreach (var e in pizzas.Value)
+            {
+                if(e.Nome == pizza.Nome || pizza.Nome == null)
+                {
+                    return BadRequest("Ja existe uma pizza com esse nome");
+                }
+            }
+
+           return Ok(await ps.PostPizza(pizza));
         }
 
         // DELETE: api/Pizzas/5
         [HttpDelete("Req/{id}")]
         public async Task<ActionResult<string>> DeletePizza(int id)
         {
-            return await ps.DeletePizza(id);
+            var pizza = await ValidarId(id);
+
+            if(pizza.Value == null)
+            {
+                return BadRequest(pizza.Result);
+            }
+            return Ok(await ps.DeletePizza(id));
+        }
+
+        private async Task<ActionResult<Pizza>> ValidarId(int id)
+        {
+            try
+            {
+                var verify = await ps.GetPizza(id);
+
+                if (verify == null)
+                {
+                    return BadRequest("id não encontrado");
+                }
+
+                return verify;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
     }
 }
